@@ -265,7 +265,7 @@ class Policy:
 
     def matchContent(self, name: str, validators: List[str]):
         for validator in validators:
-            if re.match(validator, name, re.IGNORECASE):
+            if fnmatch.filter([name], validator):
                 return True
             else:
                 return False
