@@ -62,6 +62,7 @@ GRAPHQL_DEPENDENCY_INFO = """\
                                     isInOrganization
                                     licenseInfo {
                                         name
+										spdxId
                                     }
                                 }
                             }
