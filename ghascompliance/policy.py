@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import yaml
 import shutil
@@ -263,12 +264,11 @@ class Policy:
         return severities
 
     def matchContent(self, name: str, validators: List[str]):
-        # Wildcard matching
         for validator in validators:
-            results = fnmatch.filter([name], validator)
-            if results:
+            if re.match(validator, name, re.IGNORECASE):
                 return True
-        return False
+            else:
+                return False
 
     def checkViolationRemediation(
         self,
@@ -406,6 +406,7 @@ class Policy:
         license = license.lower()
 
         dependency_short_name = dependency.get("name", "NA")
+        dependency_license_spdxId = dependency.get("spdxId", "NA")
         dependency_name = (
             dependency.get("manager", "NA") + "://" + dependency.get("name", "NA")
         )
@@ -439,7 +440,7 @@ class Policy:
             ign.lower() for ign in policy.get("conditions", {}).get("names", [])
         ]
 
-        for value in [license, dependency_full, dependency_name, dependency_short_name]:
+        for value in [license, dependency_full, dependency_name, dependency_short_name, dependency_license_spdxId ]:
 
             # return false (ignore) if name or id is defined in the ignore portion of the policy
             if self.matchContent(value, ingore_ids) or self.matchContent(
